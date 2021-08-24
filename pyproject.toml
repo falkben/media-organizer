@@ -7,6 +7,8 @@ authors = ["Ben Falk <falk.ben@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 textual = { git = "https://github.com/willmcgugan/textual.git", branch = "main" }
+tmdbsimple = "^2.8.0"
+python-dotenv = "^0.19.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
