@@ -41,3 +41,11 @@ run the example to ensure the environment and API token has been set up correctl
 $ python example.py
 Movie title: The Matrix
 ```
+
+## Examples
+
+Reads an example movie into a load database file (`database.db`)
+
+```cmd
+python examples/load_into_db.py
+```
