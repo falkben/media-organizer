@@ -2,7 +2,7 @@ import uuid
 from typing import List, Optional
 from uuid import UUID
 
-from sqlmodel import Field, Relationship, Session, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 
 
 class SpokenLanguageMovieLink(SQLModel, table=True):
@@ -130,65 +130,3 @@ class Movie(SQLModel, table=True):
     video: bool
     vote_average: float
     vote_count: int
-
-
-def create_model_obj(o: dict, model_type: SQLModel, session: Session) -> SQLModel:
-    obj = model_type(**o)
-    # session.add(obj)
-    return obj
-
-
-def create_model_objs(
-    data: dict, model_type: SQLModel, session: Session
-) -> List[SQLModel]:
-    objs = []
-    for o in data:
-        obj = create_model_obj(o, model_type, session)
-        objs.append(obj)
-    return objs
-
-
-def tmdb_info_to_movie(info: dict, session: Session) -> Movie:
-    relationship_keys = {
-        "genres",
-        "belongs_to_collection",
-        "production_companies",
-        "production_countries",
-        "spoken_languages",
-    }
-    movie_info = {k: v for k, v in info.items() if k not in relationship_keys}
-
-    genres = create_model_objs(info["genres"], Genre, session)
-
-    collection = None
-    if info["belongs_to_collection"]:
-        collection = create_model_obj(
-            info["belongs_to_collection"], Collection, session
-        )
-
-    production_companies = create_model_objs(
-        info["production_companies"], ProductionCompany, session
-    )
-
-    production_countries = create_model_objs(
-        info["production_countries"], ProductionCountry, session
-    )
-
-    # languages
-    spoken_languages = create_model_objs(
-        info["spoken_languages"], SpokenLanguage, session
-    )
-
-    # create movie
-    movie = Movie(**movie_info)
-    movie.genres = genres
-    movie.collection = collection
-    movie.production_companies = production_companies
-    movie.production_countries = production_countries
-    movie.spoken_languages = spoken_languages
-
-    session.add(movie)
-    session.commit()
-    session.refresh(movie)
-
-    return movie
