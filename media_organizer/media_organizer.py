@@ -3,7 +3,6 @@ import sys
 from typing import Optional, Type
 
 from rich.console import Console
-from rich.json import JSON
 from rich.pretty import Pretty
 from rich.traceback import Traceback
 from sqlmodel import Session
@@ -81,7 +80,7 @@ class MyApp(App):
         movie = get_movie_from_path(message.path, self.session)
         if movie:
             try:
-                movie_data = Pretty(movie.dict())
+                movie_data = Pretty(movie)
             except Exception:
                 movie_data = Traceback(width=None, show_locals=True)
             await self.body.update(movie_data)

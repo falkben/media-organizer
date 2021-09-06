@@ -24,6 +24,9 @@ class SpokenLanguage(SQLModel, table=True):
         back_populates="spoken_languages", link_model=SpokenLanguageMovieLink
     )
 
+    def __rich_repr__(self):
+        yield self.name
+
 
 class ProductionCountryMovieLink(SQLModel, table=True):
     production_country_id: Optional[UUID] = Field(
@@ -42,6 +45,9 @@ class ProductionCountry(SQLModel, table=True):
     movies: List["Movie"] = Relationship(
         back_populates="production_countries", link_model=ProductionCountryMovieLink
     )
+
+    def __rich_repr__(self):
+        yield self.name
 
 
 class ProductionCompanyMovieLink(SQLModel, table=True):
@@ -64,6 +70,9 @@ class ProductionCompany(SQLModel, table=True):
         back_populates="production_companies", link_model=ProductionCompanyMovieLink
     )
 
+    def __rich_repr__(self):
+        yield self.name
+
 
 class Collection(SQLModel, table=True):
     local_id: UUID = Field(default_factory=uuid.uuid4, primary_key=True)
@@ -72,6 +81,9 @@ class Collection(SQLModel, table=True):
     poster_path: str
     backdrop_path: str
     movies: List["Movie"] = Relationship(back_populates="collection")
+
+    def __rich_repr__(self):
+        yield self.name
 
 
 class GenreMovieLink(SQLModel, table=True):
@@ -90,6 +102,9 @@ class Genre(SQLModel, table=True):
     movies: List["Movie"] = Relationship(
         back_populates="genres", link_model=GenreMovieLink
     )
+
+    def __rich_repr__(self):
+        yield self.name
 
 
 class Movie(SQLModel, table=True):
@@ -130,3 +145,13 @@ class Movie(SQLModel, table=True):
     video: bool
     vote_average: float
     vote_count: int
+
+    def __rich_repr__(self):
+        yield self.title
+        yield "overview", self.overview
+        yield "release_date", self.release_date
+        yield "runtime", f"{self.runtime} min"
+        yield "genres", self.genres
+        yield "collection", self.collection
+        yield "spoken_languages", self.spoken_languages
+        yield "revenue", f"{self.revenue / 1e6:.1f}M"
