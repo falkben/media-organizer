@@ -3,8 +3,6 @@ import sys
 from typing import Optional, Type
 
 from rich.console import Console
-from rich.pretty import Pretty
-from rich.traceback import Traceback
 from sqlmodel import Session
 from textual.app import App
 from textual.driver import Driver
@@ -79,11 +77,7 @@ class MyApp(App):
         self.app.sub_title = os.path.basename(message.path)
         movie = get_movie_from_path(message.path, self.session)
         if movie:
-            try:
-                movie_data = Pretty(movie)
-            except Exception:
-                movie_data = Traceback(width=None, show_locals=True)
-            await self.body.update(movie_data)
+            await self.body.update(movie)
         else:
             await self.body.update(f"not found: {message.path}")
 

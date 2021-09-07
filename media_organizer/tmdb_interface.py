@@ -13,6 +13,7 @@ from models import (
     ProductionCountry,
     SpokenLanguage,
 )
+from sqlalchemy import extract
 from sqlalchemy.exc import NoResultFound
 from sqlmodel import Session, SQLModel, select
 
@@ -104,10 +105,12 @@ def get_movie_from_path(path: str, session: Session) -> Optional[Movie]:
     movie_name, year = split_movie_path_title_and_year(path)
 
     # lookup in db
+    statement = select(Movie).where(Movie.title == movie_name)
+    if year is not None:
+        statement = statement.filter(extract("year", Movie.release_date) == int(year))
     try:
-        movie = session.exec(select(Movie).where(Movie.title == movie_name)).one()
+        movie = session.exec(statement).one()
     except NoResultFound:
-
         search = tmdb.Search()
         search.movie(query=movie_name, year=year)
         # take the first result:

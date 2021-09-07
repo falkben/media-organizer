@@ -15,7 +15,7 @@ poetry install
 ## run
 
 ```command
-poetry run python media_organizer/media_organizer.py
+poetry run python media_organizer/main.py
 ```
 
 ## API Key for TMDB
